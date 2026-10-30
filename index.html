@@ -80,6 +80,22 @@
     .button-light { background: #eff4ef; color: var(--green-dark); }
     .button-light:hover { background: #e3eee6; }
     .button-small { padding: 7px 10px; font-size: 11px; }
+    .button:disabled { opacity: .48; cursor: not-allowed; }
+    .timer-card { margin-top: 12px; padding: 15px; border: 1px solid var(--line); border-radius: 12px; background: #fbfcf9; display: grid; justify-items: center; }
+    .timer-face { width: 170px; aspect-ratio: 1; position: relative; display: grid; place-items: center; }
+    .timer-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .timer-ring circle { fill: none; stroke-width: 6; }
+    .timer-ring-track { stroke: #e8eee8; }
+    .timer-ring-progress { stroke: #5d9472; stroke-linecap: round; transition: stroke-dashoffset .2s linear; }
+    .timer-center { position: absolute; text-align: center; }
+    .timer-display { font-variant-numeric: tabular-nums; font-size: 30px; font-weight: 720; letter-spacing: -1px; }
+    .timer-status { color: var(--muted); font-size: 11px; margin-top: 4px; }
+    .timer-actions { display: flex; justify-content: center; gap: 8px; margin-top: 12px; }
+    .timer-hint { color: var(--muted); font-size: 10px; margin-top: 10px; text-align: center; }
+    .topic-list-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 16px; }
+    .topic-list-label { color: #4a5750; font-size: 11px; font-weight: 650; }
+    .button-danger-light { color: var(--red); background: #fbefec; }
+    .button-danger-light:hover { background: #f7e2dc; }
     .upload { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 14px; padding: 12px; border: 1px dashed #cbd7cc; border-radius: 10px; background: #fbfcf9; }
     .upload-copy strong { display: block; font-size: 11px; }
     .upload-copy span { display: block; color: var(--muted); font-size: 10px; margin-top: 3px; }
@@ -206,6 +222,28 @@
               <label for="breakSize">Session length <small>before a break</small></label>
               <select id="breakSize"><option value="1">1 hour</option><option value="1.5" selected>1.5 hours</option><option value="2">2 hours</option></select>
             </div>
+            <section class="timer-card" aria-label="Study session timer">
+              <div class="timer-face">
+                <svg class="timer-ring" viewBox="0 0 120 120" aria-hidden="true">
+                  <circle class="timer-ring-track" cx="60" cy="60" r="52"></circle>
+                  <circle id="timerRingProgress" class="timer-ring-progress" cx="60" cy="60" r="52"></circle>
+                </svg>
+                <div class="timer-center">
+                  <div id="timerDisplay" class="timer-display" role="timer" aria-label="90 minutes remaining">01:30:00</div>
+                  <div id="timerStatus" class="timer-status" aria-live="polite">Ready to focus</div>
+                </div>
+              </div>
+              <div class="timer-actions">
+                <button id="timerStart" class="button button-primary button-small" type="button" style="width:auto;margin:0">Start</button>
+                <button id="timerPause" class="button button-light button-small" type="button" hidden>Pause</button>
+                <button id="timerReset" class="button button-light button-small" type="button">Reset</button>
+              </div>
+              <div class="timer-hint">Countdown follows your selected session length. Keep this tab open for the finish alert.</div>
+            </section>
+            <div class="topic-list-head">
+              <span class="topic-list-label">Topics and time estimates</span>
+              <button id="removeAllTopicsButton" class="button button-danger-light button-small" type="button" hidden>Remove all</button>
+            </div>
             <div id="topicList" class="topic-list" aria-live="polite"></div>
             <div id="capacityNotice" class="notice" hidden></div>
             <button id="generateButton" class="button button-primary">Create my study plan <span aria-hidden="true">→</span></button>
@@ -249,7 +287,15 @@
       let completedHoursByTopic = {};
       let planRevision = 0;
       let recommendedHours = null;
+      let timerDurationMs = Number($("#breakSize").value) * 60 * 60 * 1000;
+      let timerRemainingMs = timerDurationMs;
+      let timerEndsAt = null;
+      let timerRunning = false;
+      let timerInterval = null;
+      let timerAudioContext = null;
       let toastTimer;
+      const timerCircumference = 2 * Math.PI * 52;
+      $("#timerRingProgress").style.strokeDasharray = `${timerCircumference}`;
 
       function showToast(message) {
         const toast = $("#toast");
@@ -270,6 +316,113 @@
 
       function sessionId(day, session, index) {
         return session.id || `${day.date}|${session.topicId}|${index}`;
+      }
+
+      function formatTimerTime(milliseconds) {
+        const totalSeconds = Math.ceil(Math.max(0, milliseconds) / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        return [hours, minutes, seconds].map((value) => String(value).padStart(2, "0")).join(":");
+      }
+
+      function renderTimer() {
+        const display = $("#timerDisplay");
+        display.textContent = formatTimerTime(timerRemainingMs);
+        display.setAttribute("aria-label", `${Math.ceil(timerRemainingMs / 60000)} minutes remaining`);
+        $("#timerStatus").textContent = timerRunning ? "Timer running" : timerRemainingMs === 0 ? "Time's up — take a break" : timerRemainingMs < timerDurationMs ? "Paused" : "Ready to focus";
+        const progress = timerDurationMs ? timerRemainingMs / timerDurationMs : 0;
+        $("#timerRingProgress").style.strokeDashoffset = `${timerCircumference * (1 - progress)}`;
+        $("#timerStart").textContent = timerRemainingMs === 0 ? "Start again" : timerRemainingMs < timerDurationMs ? "Resume" : "Start";
+        $("#timerStart").hidden = timerRunning;
+        $("#timerPause").hidden = !timerRunning;
+        $("#timerReset").disabled = !timerRunning && timerRemainingMs === timerDurationMs;
+      }
+
+      function stopTimerInterval() {
+        if (timerInterval !== null) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+        }
+      }
+
+      function playTimerAlarm() {
+        if (!timerAudioContext || timerAudioContext.state !== "running") return;
+        const audio = timerAudioContext;
+        const startAt = audio.currentTime + 0.05;
+        [880, 660, 880].forEach((frequency, index) => {
+          const oscillator = audio.createOscillator();
+          const gain = audio.createGain();
+          const begins = startAt + index * 0.55;
+          oscillator.type = "sine";
+          oscillator.frequency.value = frequency;
+          gain.gain.setValueAtTime(0.0001, begins);
+          gain.gain.exponentialRampToValueAtTime(0.18, begins + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.0001, begins + 0.42);
+          oscillator.connect(gain);
+          gain.connect(audio.destination);
+          oscillator.start(begins);
+          oscillator.stop(begins + 0.45);
+        });
+      }
+
+      function finishTimer(playSound = true) {
+        stopTimerInterval();
+        timerRunning = false;
+        timerEndsAt = null;
+        timerRemainingMs = 0;
+        saveState();
+        renderTimer();
+        if (playSound) playTimerAlarm();
+        showToast("Session timer finished. Time for a break!");
+      }
+
+      function updateTimer() {
+        if (!timerRunning || timerEndsAt === null) return;
+        timerRemainingMs = Math.max(0, timerEndsAt - Date.now());
+        if (timerRemainingMs === 0) {
+          finishTimer();
+          return;
+        }
+        renderTimer();
+        saveState();
+      }
+
+      async function startTimer() {
+        if (timerRunning) return;
+        if (timerRemainingMs === 0) timerRemainingMs = timerDurationMs;
+        const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextConstructor && !timerAudioContext) timerAudioContext = new AudioContextConstructor();
+        if (timerAudioContext?.state === "suspended") {
+          try { await timerAudioContext.resume(); }
+          catch (error) { console.error("Could not enable the session timer sound.", error); }
+        }
+        timerRunning = true;
+        timerEndsAt = Date.now() + timerRemainingMs;
+        renderTimer();
+        saveState();
+        stopTimerInterval();
+        timerInterval = setInterval(updateTimer, 1000);
+      }
+
+      function pauseTimer() {
+        if (!timerRunning || timerEndsAt === null) return;
+        timerRemainingMs = Math.max(0, timerEndsAt - Date.now());
+        timerRunning = false;
+        timerEndsAt = null;
+        stopTimerInterval();
+        renderTimer();
+        saveState();
+      }
+
+      function resetTimer() {
+        timerDurationMs = Number($("#breakSize").value) * 60 * 60 * 1000;
+        timerRemainingMs = timerDurationMs;
+        timerRunning = false;
+        timerEndsAt = null;
+        stopTimerInterval();
+        renderTimer();
+        saveState();
       }
 
       function getCompletedStudyHours() {
@@ -294,6 +447,7 @@
 
       function renderTopics() {
         topicList.replaceChildren();
+        $("#removeAllTopicsButton").hidden = topics.length === 0;
         topics.forEach((topic) => {
           const row = document.createElement("div");
           row.className = "topic-row";
@@ -609,7 +763,7 @@
       }
 
       function saveState() {
-        const data = { topics, plan, completedSessions: [...completedSessions], completedHoursByTopic, planRevision, hoursPerDay: hoursInput.value, targetDate: deadlineInput.value, breakSize: $("#breakSize").value };
+        const data = { topics, plan, completedSessions: [...completedSessions], completedHoursByTopic, planRevision, hoursPerDay: hoursInput.value, targetDate: deadlineInput.value, breakSize: $("#breakSize").value, timerDurationMs, timerRemainingMs, timerEndsAt, timerRunning };
         try { localStorage.setItem(storageKey, JSON.stringify(data)); }
         catch (error) { console.error("Could not save your plan locally.", error); }
       }
@@ -626,6 +780,18 @@
           if (saved.hoursPerDay) hoursInput.value = saved.hoursPerDay;
           if (saved.targetDate) deadlineInput.value = saved.targetDate;
           if (saved.breakSize) $("#breakSize").value = saved.breakSize;
+          timerDurationMs = Number($("#breakSize").value) * 60 * 60 * 1000;
+          timerRemainingMs = Number.isFinite(saved.timerRemainingMs) ? Math.max(0, saved.timerRemainingMs) : timerDurationMs;
+          timerRunning = Boolean(saved.timerRunning && Number.isFinite(saved.timerEndsAt));
+          timerEndsAt = timerRunning ? saved.timerEndsAt : null;
+          if (timerRunning) {
+            timerRemainingMs = Math.max(0, timerEndsAt - Date.now());
+            if (timerRemainingMs === 0) {
+              finishTimer(false);
+            } else {
+              timerInterval = setInterval(updateTimer, 1000);
+            }
+          }
         } catch (error) {
           console.error("Could not load the saved study plan.", error);
           showToast("Saved plan couldn't be loaded; start a new one.");
@@ -733,6 +899,19 @@
           event.target.value = "";
         }
       });
+      $("#removeAllTopicsButton").addEventListener("click", () => {
+        if (!topics.length) return;
+        const confirmed = window.confirm("Remove all topics, the generated study plan, and saved task completion for this syllabus?");
+        if (!confirmed) return;
+        topics = [];
+        plan = [];
+        completedSessions.clear();
+        completedHoursByTopic = {};
+        planRevision += 1;
+        saveState();
+        renderAll();
+        showToast("All topics and their study plan were removed.");
+      });
       $("#generateButton").addEventListener("click", buildPlan);
       $("#applyRecommendation").addEventListener("click", () => {
         if (recommendedHours === null) return;
@@ -742,7 +921,11 @@
         renderStats();
         showToast(`Daily study time set to ${formatHours(selectedHours)}.`);
       });
+      $("#timerStart").addEventListener("click", startTimer);
+      $("#timerPause").addEventListener("click", pauseTimer);
+      $("#timerReset").addEventListener("click", resetTimer);
       [hoursInput, deadlineInput, $("#breakSize")].forEach((input) => input.addEventListener("change", () => {
+        if (input === $("#breakSize")) resetTimer();
         saveState();
         renderStats();
       }));
@@ -765,6 +948,7 @@
 
       loadState();
       if (topics.length) topicInput.value = "";
+      renderTimer();
       renderAll();
     })();
   </script>
