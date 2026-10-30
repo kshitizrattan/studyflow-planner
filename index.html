@@ -49,6 +49,25 @@
     .subheading { color: var(--muted); font-size: 12px; margin-top: 5px; }
     .today-tag { background: var(--mint); color: var(--green-dark); padding: 7px 10px; border-radius: 100px; font-size: 11px; font-weight: 700; }
     .plan-summary { color: var(--muted); font-size: 13px; margin: -5px 0 14px; }
+    .plan-browser { display: grid; grid-template-columns: minmax(190px, 1fr) minmax(0, 2fr); gap: 18px; align-items: start; }
+    .calendar-column { padding: 14px; border: 1px solid var(--line); border-radius: 13px; background: #fff; }
+    .calendar-header { display: grid; grid-template-columns: 32px 1fr 32px; align-items: center; gap: 4px; margin-bottom: 13px; }
+    .calendar-header h3 { margin: 0; text-align: center; font-size: 13px; font-weight: 700; }
+    .calendar-nav { width: 30px; height: 30px; border: 0; border-radius: 8px; background: transparent; color: var(--green-dark); font-size: 19px; line-height: 1; }
+    .calendar-nav:hover { background: #eff4ef; }
+    .calendar-weekdays, .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+    .calendar-weekdays { margin-bottom: 5px; }
+    .calendar-weekdays span { color: var(--muted); text-align: center; font-size: 9px; font-weight: 650; }
+    .calendar-day { position: relative; display: grid; place-items: center; aspect-ratio: 1; width: 100%; padding: 0; border: 0; border-radius: 50%; background: transparent; color: #536159; font-size: 10px; }
+    .calendar-day:disabled { color: #c1c8c0; cursor: default; }
+    .calendar-day.is-scheduled { background: #e4f0e8; color: var(--green-dark); font-weight: 700; }
+    .calendar-day.is-scheduled:hover { background: #d3e7d8; }
+    .calendar-day.is-selected { box-shadow: inset 0 0 0 2px var(--green); }
+    .calendar-day.is-today:not(.is-selected) { box-shadow: inset 0 0 0 1px #98b7a3; }
+    .calendar-legend { display: flex; align-items: center; gap: 6px; margin-top: 12px; color: var(--muted); font-size: 10px; }
+    .calendar-legend-dot { width: 10px; height: 10px; border-radius: 50%; background: #e4f0e8; }
+    .plan-day-column { min-width: 0; }
+    .plan-day-column .empty { margin-top: 0; }
     .day-card { border: 1px solid var(--line); border-radius: 13px; margin-top: 11px; overflow: hidden; }
     .day-head { display: flex; align-items: center; justify-content: space-between; padding: 13px 15px; background: #fbfcf9; }
     .day-name { font-weight: 700; font-size: 13px; }
@@ -79,17 +98,19 @@
     .button-light:hover { background: #e3eee6; }
     .button-small { padding: 7px 10px; font-size: 11px; }
     .button:disabled { opacity: .48; cursor: not-allowed; }
-    .timer-card { margin-top: 12px; padding: 15px; border: 1px solid var(--line); border-radius: 12px; background: #fbfcf9; display: grid; justify-items: center; }
-    .timer-face { width: 170px; aspect-ratio: 1; position: relative; display: grid; place-items: center; }
-    .timer-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
-    .timer-ring circle { fill: none; stroke-width: 6; }
-    .timer-ring-track { stroke: #e8eee8; }
-    .timer-ring-progress { stroke: #5d9472; stroke-linecap: round; transition: stroke-dashoffset .2s linear; }
-    .timer-center { position: absolute; text-align: center; }
-    .timer-display { font-variant-numeric: tabular-nums; font-size: 30px; font-weight: 720; letter-spacing: -1px; }
-    .timer-status { color: var(--muted); font-size: 11px; margin-top: 4px; }
-    .timer-actions { display: flex; justify-content: center; gap: 8px; margin-top: 12px; }
-    .timer-hint { color: var(--muted); font-size: 10px; margin-top: 10px; text-align: center; }
+    .duration-picker-card { margin-top: 12px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: #fbfcf9; }
+    .session-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; width: min(100%, 250px); }
+    .wheel-column { position: relative; min-width: 0; }
+    .wheel-label { display: block; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .8px; text-align: center; margin-bottom: 7px; }
+    .wheel-list { height: 176px; overflow-y: auto; overscroll-behavior: contain; scroll-snap-type: y mandatory; scrollbar-width: none; padding: 66px 0; outline: none; }
+    .wheel-list::-webkit-scrollbar { display: none; }
+    .wheel-list:focus-visible { border-radius: 9px; box-shadow: 0 0 0 2px rgba(46,116,91,.18); }
+    .wheel-option { height: 44px; display: grid; place-items: center; scroll-snap-align: center; color: #a0aaa2; font-size: 19px; font-variant-numeric: tabular-nums; user-select: none; cursor: pointer; transition: color .12s, font-size .12s; }
+    .wheel-option[aria-selected="true"] { color: var(--ink); font-size: 27px; font-weight: 650; }
+    .wheel-window { position: absolute; pointer-events: none; top: 85px; left: 0; right: 0; height: 44px; border-top: 1px solid #dfe7df; border-bottom: 1px solid #dfe7df; }
+    .wheel-column::before, .wheel-column::after { position: absolute; z-index: 1; left: 0; right: 0; height: 66px; pointer-events: none; content: ""; }
+    .wheel-column::before { top: 19px; background: linear-gradient(#fbfcf9 6%, rgba(251,252,249,0)); }
+    .wheel-column::after { bottom: 0; background: linear-gradient(rgba(251,252,249,0), #fbfcf9 82%); }
     .topic-list-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 16px; }
     .topic-list-label { color: #4a5750; font-size: 11px; font-weight: 650; }
     .button-danger-light { color: var(--red); background: #fbefec; }
@@ -98,6 +119,12 @@
     .upload-copy strong { display: block; font-size: 11px; }
     .upload-copy span { display: block; color: var(--muted); font-size: 10px; margin-top: 3px; }
     .upload input { display: none; }
+    .material-workflow { margin-top: 14px; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: #fbfcf9; }
+    .material-workflow p { color: #59665e; font-size: 11px; line-height: 1.55; margin: 0 0 10px; }
+    .material-prompt-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .material-workflow textarea { display: block; width: 100%; min-height: 105px; resize: vertical; margin-top: 10px; padding: 10px 11px; border: 1px solid #dfe4dc; border-radius: 9px; color: var(--ink); font: inherit; font-size: 12px; line-height: 1.5; }
+    .material-workflow textarea:focus { border-color: #83aa92; box-shadow: 0 0 0 3px rgba(46,116,91,.09); outline: none; }
+    .material-workflow .button-primary { margin-top: 9px; }
     .topic-list { margin-top: 14px; display: grid; gap: 8px; max-height: 245px; overflow: auto; }
     .topic-row { display: grid; grid-template-columns: 17px minmax(0, 1fr) 70px 28px; gap: 8px; align-items: center; padding: 9px; border: 1px solid var(--line); border-radius: 10px; }
     .topic-check { width: 15px; height: 15px; accent-color: var(--green); }
@@ -134,8 +161,9 @@
     .recommendation .button { flex: 0 0 auto; }
     .toast { position: fixed; bottom: 22px; left: 50%; transform: translate(-50%, 20px); opacity: 0; transition: .2s; pointer-events: none; background: #25352d; color: white; padding: 11px 16px; border-radius: 9px; font-size: 12px; box-shadow: var(--shadow); z-index: 3; }
     .toast.show { transform: translate(-50%, 0); opacity: 1; }
-    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .side { grid-template-columns: 1fr 1fr; align-items: start; } }
-    @media (max-width: 620px) { .topbar { padding: 0 5%; height: 64px; } main { padding: 26px 5% 42px; } .welcome { align-items: flex-start; flex-direction: column; } .stats { grid-template-columns: 1fr 1fr; gap: 9px; } .stat { min-height: 91px; padding: 14px; } .stat-value { font-size: 23px; } .stat-icon { width: 34px; height: 34px; } .side { grid-template-columns: 1fr; } .panel { padding: 18px; } .analysis-grid { grid-template-columns: 1fr; } .recommendation { align-items: flex-start; flex-direction: column; } }
+    @media (max-width: 1100px) { .plan-browser { grid-template-columns: minmax(180px, 1fr) minmax(0, 1.6fr); gap: 12px; } }
+    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .plan-browser { grid-template-columns: minmax(220px, .8fr) minmax(0, 1.2fr); } .side { grid-template-columns: 1fr 1fr; align-items: start; } }
+    @media (max-width: 620px) { .topbar { padding: 0 5%; height: 64px; } main { padding: 26px 5% 42px; } .welcome { align-items: flex-start; flex-direction: column; } .stats { grid-template-columns: 1fr 1fr; gap: 9px; } .stat { min-height: 91px; padding: 14px; } .stat-value { font-size: 23px; } .stat-icon { width: 34px; height: 34px; } .side { grid-template-columns: 1fr; } .panel { padding: 18px; } .analysis-grid { grid-template-columns: 1fr; } .recommendation { align-items: flex-start; flex-direction: column; } .plan-browser { grid-template-columns: 1fr; } .calendar-column { max-width: 340px; width: 100%; margin: 0 auto; } }
   </style>
 </head>
 <body>
@@ -183,54 +211,86 @@
           </div>
         </div>
         <div class="recommendation">
-          <div><strong>Daily study-time recommendation</strong><p id="recommendationText">Add topics and a target date to get a pace recommendation.</p></div>
-          <button id="applyRecommendation" class="button button-light button-small" type="button" hidden>Use recommended time</button>
+          <div><strong>Daily study-session recommendation</strong><p id="recommendationText">Add topics and a target date to get a pace recommendation.</p></div>
+          <button id="applyRecommendation" class="button button-light button-small" type="button" hidden>Use recommended sessions</button>
         </div>
       </section>
       <div class="layout">
         <section class="panel">
           <div class="panel-heading">
-            <div><h2>Your study plan</h2><div class="subheading">A daily roadmap, built around your available time</div></div>
+            <div><h2>Your study plan</h2><div class="subheading">Choose a highlighted date to view its sessions</div></div>
             <span class="today-tag" id="planTag">READY WHEN YOU ARE</span>
           </div>
           <div id="planSummary" class="plan-summary">Add your topics and preferences to create a plan.</div>
-          <div id="planContent"><div class="empty"><strong>Your first study plan is one step away</strong>Add a syllabus, choose your daily study time and target date, then generate a schedule that breaks topics into manageable sessions.</div></div>
+          <div class="plan-browser">
+            <section class="calendar-column" aria-label="Study plan calendar">
+              <div class="calendar-header">
+                <button id="calendarPrevious" class="calendar-nav" type="button" aria-label="Previous month">‹</button>
+                <h3 id="calendarMonth"></h3>
+                <button id="calendarNext" class="calendar-nav" type="button" aria-label="Next month">›</button>
+              </div>
+              <div class="calendar-weekdays" aria-hidden="true">
+                <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+              </div>
+              <div id="calendarGrid" class="calendar-grid" role="grid" aria-label="Calendar dates"></div>
+              <div class="calendar-legend"><span class="calendar-legend-dot" aria-hidden="true"></span> Scheduled study day</div>
+            </section>
+            <section id="planContent" class="plan-day-column" aria-label="Selected day's study schedule">
+              <div class="empty"><strong>Select a study date</strong>Dates with planned sessions are highlighted in green.</div>
+            </section>
+          </div>
         </section>
         <aside class="side">
           <section class="panel setup-panel">
             <div class="panel-heading" style="margin-bottom:8px">
               <div><h2>Build your plan</h2><div class="subheading">Adjust everything to fit your routine</div></div>
             </div>
-            <div class="upload">
-              <div class="upload-copy"><strong>Add a syllabus</strong><span>PDF, Word, text, Markdown or CSV</span></div>
-              <label class="button button-light button-small" for="fileInput">Choose file</label>
-              <input id="fileInput" type="file" accept=".pdf,.docx,.txt,.md,.csv">
+            <div class="material-workflow">
+              <p>Add your study materials to NotebookLM, then copy and run this prompt in that notebook. Paste NotebookLM’s JSON estimates below.</p>
+              <div class="material-prompt-actions">
+                <button id="copyMaterialPrompt" class="button button-light button-small" type="button" aria-label="Copy NotebookLM prompt" title="Copy NotebookLM prompt">
+                  <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5 2.5h7.25A1.75 1.75 0 0 1 14 4.25v8A1.75 1.75 0 0 1 12.25 14h-6.5A1.75 1.75 0 0 1 4 12.25V3.5a1 1 0 0 1 1-1Zm0 1v8.75c0 .41.34.75.75.75h6.5c.41 0 .75-.34.75-.75v-8a.75.75 0 0 0-.75-.75H5Zm-2 2H2.75a.75.75 0 0 0-.75.75v8c0 .41.34.75.75.75h6.5c.41 0 .75-.34.75-.75v-.5h1v.5A1.75 1.75 0 0 1 9.25 16h-6.5A1.75 1.75 0 0 1 1 14.25v-8A1.75 1.75 0 0 1 2.75 4.5H3v1Z" fill="currentColor"/></svg>
+                  <span>Prompt</span>
+                </button>
+                <button id="openNotebookForMaterials" class="button button-light button-small" type="button">Open NotebookLM ↗</button>
+              </div>
+              <textarea id="materialEstimatesInput" aria-label="Paste NotebookLM topic estimates" placeholder="Paste the JSON response from NotebookLM here." spellcheck="false"></textarea>
+              <button id="importMaterialEstimates" class="button button-primary button-small" type="button">Add estimates to my topics</button>
             </div>
             <div class="two-fields">
-              <div class="field"><label for="hoursPerDay">Study time / day</label><input id="hoursPerDay" type="number" min="0.5" max="16" step="0.5" value="2"></div>
+              <div class="field"><label for="hoursPerDay">Study sessions / day</label><input id="hoursPerDay" type="number" min="1" max="16" step="1" value="2"></div>
               <div class="field"><label for="targetDate">Finish by</label><input id="targetDate" type="date"></div>
             </div>
-            <div class="field">
-              <label for="breakSize">Session length <small>before a break</small></label>
-              <select id="breakSize"><option value="1">1 hour</option><option value="1.5" selected>1.5 hours</option><option value="2">2 hours</option></select>
+            <div class="two-fields">
+              <div class="field">
+                <label for="includeMockTests">Include mock tests?</label>
+                <select id="includeMockTests">
+                  <option value="no">No</option>
+                  <option value="yes">Yes</option>
+                </select>
+              </div>
+              <div id="mockTestCountField" class="field" hidden>
+                <label for="mockTestCount">Number of mock tests</label>
+                <input id="mockTestCount" type="number" min="1" max="50" step="1" value="1">
+              </div>
             </div>
-            <section class="timer-card" aria-label="Study session timer">
-              <div class="timer-face">
-                <svg class="timer-ring" viewBox="0 0 120 120" aria-hidden="true">
-                  <circle class="timer-ring-track" cx="60" cy="60" r="52"></circle>
-                  <circle id="timerRingProgress" class="timer-ring-progress" cx="60" cy="60" r="52"></circle>
-                </svg>
-                <div class="timer-center">
-                  <div id="timerDisplay" class="timer-display" role="timer" aria-label="90 minutes remaining">01:30:00</div>
-                  <div id="timerStatus" class="timer-status" aria-live="polite">Ready to focus</div>
+            <div id="mockTestHint" class="material-file-status" hidden>Each mock test uses one session slot and lasts your selected session length.</div>
+            <section class="duration-picker-card" aria-label="Study session length">
+              <div class="panel-heading" style="width:100%;margin-bottom:14px">
+                <div><h2 style="font-size:14px">Session length</h2><div class="subheading">How long each study session lasts. Changing this updates your plan.</div></div>
+              </div>
+              <div class="session-picker" aria-label="Set session length">
+                <div class="wheel-column">
+                  <span class="wheel-label">HOURS</span>
+                  <div id="hoursWheel" class="wheel-list" role="listbox" aria-label="Hours" tabindex="0"></div>
+                  <div class="wheel-window" aria-hidden="true"></div>
+                </div>
+                <div class="wheel-column">
+                  <span class="wheel-label">MINUTES</span>
+                  <div id="minutesWheel" class="wheel-list" role="listbox" aria-label="Minutes" tabindex="0"></div>
+                  <div class="wheel-window" aria-hidden="true"></div>
                 </div>
               </div>
-              <div class="timer-actions">
-                <button id="timerStart" class="button button-primary button-small" type="button" style="width:auto;margin:0">Start</button>
-                <button id="timerPause" class="button button-light button-small" type="button" hidden>Pause</button>
-                <button id="timerReset" class="button button-light button-small" type="button">Reset</button>
-              </div>
-              <div class="timer-hint">Countdown follows your selected session length. Keep this tab open for the finish alert.</div>
             </section>
             <div class="topic-list-head">
               <span class="topic-list-label">Topics and time estimates</span>
@@ -254,8 +314,6 @@
     </main>
   </div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.9.0/mammoth.browser.min.js"></script>
   <script>
     (() => {
       const $ = (selector) => document.querySelector(selector);
@@ -276,17 +334,39 @@
       let plan = [];
       let completedSessions = new Set();
       let completedHoursByTopic = {};
+      let calendarMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      let selectedPlanDate = null;
       let planRevision = 0;
-      let recommendedHours = null;
-      let timerDurationMs = Number($("#breakSize").value) * 60 * 60 * 1000;
-      let timerRemainingMs = timerDurationMs;
-      let timerEndsAt = null;
-      let timerRunning = false;
-      let timerInterval = null;
-      let timerAudioContext = null;
+      let recommendedSessions = null;
+      let sessionLengthMinutes = 90;
       let toastTimer;
-      const timerCircumference = 2 * Math.PI * 52;
-      $("#timerRingProgress").style.strokeDasharray = `${timerCircumference}`;
+      const wheelOptionHeight = 44;
+      let wheelScrollTimer = null;
+      let isRebuildingPlan = false;
+
+      function populateWheel(wheel, maxValue) {
+        const options = document.createDocumentFragment();
+        for (let value = 0; value <= maxValue; value += 1) {
+          const option = document.createElement("div");
+          option.className = "wheel-option";
+          option.id = `${wheel.id}-option-${value}`;
+          option.setAttribute("role", "option");
+          option.setAttribute("aria-selected", "false");
+          option.dataset.value = String(value);
+          option.textContent = String(value).padStart(2, "0");
+          options.append(option);
+        }
+        wheel.replaceChildren(options);
+      }
+
+      function syncWheel(wheel, selectedValue) {
+        wheel.querySelectorAll(".wheel-option").forEach((option) => {
+          const selected = Number(option.dataset.value) === selectedValue;
+          option.setAttribute("aria-selected", String(selected));
+          if (selected) wheel.setAttribute("aria-activedescendant", option.id);
+        });
+        wheel.scrollTop = selectedValue * wheelOptionHeight;
+      }
 
       function showToast(message) {
         const toast = $("#toast");
@@ -296,144 +376,131 @@
         toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
       }
 
-      function estimateHours(name) {
-        const words = name.trim().split(/\s+/).filter(Boolean).length;
-        return Math.max(1, Math.min(5, Math.round((1 + words * 0.32) * 2) / 2));
-      }
-
       function formatHours(hours) {
         return `${Number.isInteger(hours) ? hours : hours.toFixed(1)}h`;
+      }
+
+      function formatDuration(hours) {
+        const totalMinutes = Math.round(hours * 60);
+        const wholeHours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        if (wholeHours && minutes) return `${wholeHours}h ${minutes}m`;
+        if (wholeHours) return `${wholeHours}h`;
+        return `${minutes}m`;
       }
 
       function sessionId(day, session, index) {
         return session.id || `${day.date}|${session.topicId}|${index}`;
       }
 
-      function formatTimerTime(milliseconds) {
-        const totalSeconds = Math.ceil(Math.max(0, milliseconds) / 1000);
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-        return [hours, minutes, seconds].map((value) => String(value).padStart(2, "0")).join(":");
-      }
-
-      function renderTimer() {
-        const display = $("#timerDisplay");
-        display.textContent = formatTimerTime(timerRemainingMs);
-        display.setAttribute("aria-label", `${Math.ceil(timerRemainingMs / 60000)} minutes remaining`);
-        $("#timerStatus").textContent = timerRunning ? "Timer running" : timerRemainingMs === 0 ? "Time's up — take a break" : timerRemainingMs < timerDurationMs ? "Paused" : "Ready to focus";
-        const progress = timerDurationMs ? timerRemainingMs / timerDurationMs : 0;
-        $("#timerRingProgress").style.strokeDashoffset = `${timerCircumference * (1 - progress)}`;
-        $("#timerStart").textContent = timerRemainingMs === 0 ? "Start again" : timerRemainingMs < timerDurationMs ? "Resume" : "Start";
-        $("#timerStart").hidden = timerRunning;
-        $("#timerPause").hidden = !timerRunning;
-        $("#timerReset").disabled = !timerRunning && timerRemainingMs === timerDurationMs;
-      }
-
-      function stopTimerInterval() {
-        if (timerInterval !== null) {
-          clearInterval(timerInterval);
-          timerInterval = null;
+      function setSessionLength(totalMinutes) {
+        const maximumMinutes = 23 * 60 + 59;
+        const nextLength = Math.max(1, Math.min(maximumMinutes, Math.round(totalMinutes)));
+        const changed = nextLength !== sessionLengthMinutes;
+        sessionLengthMinutes = nextLength;
+        syncWheel($("#hoursWheel"), Math.floor(sessionLengthMinutes / 60));
+        syncWheel($("#minutesWheel"), sessionLengthMinutes % 60);
+        if (!changed) return;
+        saveState();
+        if (plan.length) {
+          isRebuildingPlan = true;
+          try {
+            buildPlan();
+          } finally {
+            isRebuildingPlan = false;
+          }
+        } else {
+          renderStats();
         }
       }
 
-      function playTimerAlarm() {
-        if (!timerAudioContext || timerAudioContext.state !== "running") return;
-        const audio = timerAudioContext;
-        const startAt = audio.currentTime + 0.05;
-        [880, 660, 880].forEach((frequency, index) => {
-          const oscillator = audio.createOscillator();
-          const gain = audio.createGain();
-          const begins = startAt + index * 0.55;
-          oscillator.type = "sine";
-          oscillator.frequency.value = frequency;
-          gain.gain.setValueAtTime(0.0001, begins);
-          gain.gain.exponentialRampToValueAtTime(0.18, begins + 0.03);
-          gain.gain.exponentialRampToValueAtTime(0.0001, begins + 0.42);
-          oscillator.connect(gain);
-          gain.connect(audio.destination);
-          oscillator.start(begins);
-          oscillator.stop(begins + 0.45);
-        });
-      }
-
-      function finishTimer(playSound = true) {
-        stopTimerInterval();
-        timerRunning = false;
-        timerEndsAt = null;
-        timerRemainingMs = 0;
-        saveState();
-        renderTimer();
-        if (playSound) playTimerAlarm();
-        showToast("Session timer finished. Time for a break!");
-      }
-
-      function updateTimer() {
-        if (!timerRunning || timerEndsAt === null) return;
-        timerRemainingMs = Math.max(0, timerEndsAt - Date.now());
-        if (timerRemainingMs === 0) {
-          finishTimer();
+      function updateSessionLengthFromWheels() {
+        const hours = Math.round($("#hoursWheel").scrollTop / wheelOptionHeight);
+        const minutes = Math.round($("#minutesWheel").scrollTop / wheelOptionHeight);
+        const nextLength = hours * 60 + minutes;
+        if (nextLength === 0) {
+          setSessionLength(1);
           return;
         }
-        renderTimer();
-        saveState();
-      }
-
-      async function startTimer() {
-        if (timerRunning) return;
-        if (timerRemainingMs === 0) timerRemainingMs = timerDurationMs;
-        const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
-        if (AudioContextConstructor && !timerAudioContext) timerAudioContext = new AudioContextConstructor();
-        if (timerAudioContext?.state === "suspended") {
-          try { await timerAudioContext.resume(); }
-          catch (error) { console.error("Could not enable the session timer sound.", error); }
+        if (nextLength !== sessionLengthMinutes) setSessionLength(nextLength);
+        else {
+          syncWheel($("#hoursWheel"), hours);
+          syncWheel($("#minutesWheel"), minutes);
         }
-        timerRunning = true;
-        timerEndsAt = Date.now() + timerRemainingMs;
-        renderTimer();
-        saveState();
-        stopTimerInterval();
-        timerInterval = setInterval(updateTimer, 1000);
       }
 
-      function pauseTimer() {
-        if (!timerRunning || timerEndsAt === null) return;
-        timerRemainingMs = Math.max(0, timerEndsAt - Date.now());
-        timerRunning = false;
-        timerEndsAt = null;
-        stopTimerInterval();
-        renderTimer();
-        saveState();
-      }
-
-      function resetTimer() {
-        timerDurationMs = Number($("#breakSize").value) * 60 * 60 * 1000;
-        timerRemainingMs = timerDurationMs;
-        timerRunning = false;
-        timerEndsAt = null;
-        stopTimerInterval();
-        renderTimer();
-        saveState();
+      function setupSessionWheels() {
+        const hoursWheel = $("#hoursWheel");
+        const minutesWheel = $("#minutesWheel");
+        populateWheel(hoursWheel, 23);
+        populateWheel(minutesWheel, 59);
+        [hoursWheel, minutesWheel].forEach((wheel) => {
+          wheel.addEventListener("scroll", () => {
+            clearTimeout(wheelScrollTimer);
+            wheelScrollTimer = setTimeout(updateSessionLengthFromWheels, 260);
+          }, { passive: true });
+          wheel.addEventListener("click", (event) => {
+            const option = event.target.closest(".wheel-option");
+            if (!option) return;
+            const value = Number(option.dataset.value);
+            wheel.scrollTo({ top: value * wheelOptionHeight, behavior: "smooth" });
+            clearTimeout(wheelScrollTimer);
+            wheelScrollTimer = setTimeout(updateSessionLengthFromWheels, 260);
+          });
+          wheel.addEventListener("keydown", (event) => {
+            if (!["ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return;
+            event.preventDefault();
+            const selected = Math.round(wheel.scrollTop / wheelOptionHeight);
+            const lastValue = wheel === hoursWheel ? 23 : 59;
+            const next = event.key === "Home" ? 0 : event.key === "End" ? lastValue : Math.max(0, Math.min(lastValue, selected + (event.key === "ArrowDown" ? 1 : -1)));
+            wheel.scrollTo({ top: next * wheelOptionHeight, behavior: "smooth" });
+            clearTimeout(wheelScrollTimer);
+            wheelScrollTimer = setTimeout(updateSessionLengthFromWheels, 260);
+          });
+        });
       }
 
       function getCompletedStudyHours() {
         const hoursByTopic = { ...completedHoursByTopic };
         plan.forEach((day) => {
           day.sessions.forEach((session, index) => {
-            if (!completedSessions.has(sessionId(day, session, index))) return;
+            if (session.type === "mock-test" || !completedSessions.has(sessionId(day, session, index))) return;
             hoursByTopic[session.topicId] = (hoursByTopic[session.topicId] || 0) + Number(session.duration);
           });
         });
         return hoursByTopic;
       }
 
-      function parseTopicLines(value) {
-        return value.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).map((line, index) => {
-          const parts = line.split("|").map((part) => part.trim());
-          const subject = parts.length > 1 ? parts.shift() : "General";
-          const name = parts.join(" | ") || line;
-          return { id: `topic-${Date.now()}-${index}`, subject: subject || "General", name, hours: estimateHours(name), done: false };
-        });
+      function getRemainingMockTestHours() {
+        const plannedMockTests = plan.flatMap((day) => day.sessions.map((session, index) => ({
+          session,
+          id: sessionId(day, session, index)
+        }))).filter(({ session }) => session.type === "mock-test");
+        if (plannedMockTests.length) {
+          return plannedMockTests.reduce((total, { session, id }) => total + (completedSessions.has(id) ? 0 : Number(session.duration)), 0);
+        }
+        if ($("#includeMockTests").value !== "yes") return 0;
+        const count = Number($("#mockTestCount").value);
+        return Number.isInteger(count) && count >= 1 && count <= 50 ? count * sessionLengthMinutes / 60 : 0;
+      }
+
+      function getRemainingMockTestCount() {
+        const plannedMockTests = plan.flatMap((day) => day.sessions.map((session, index) => ({
+          session,
+          id: sessionId(day, session, index)
+        }))).filter(({ session }) => session.type === "mock-test");
+        if (plannedMockTests.length) return plannedMockTests.filter(({ id }) => !completedSessions.has(id)).length;
+        if ($("#includeMockTests").value !== "yes") return 0;
+        const count = Number($("#mockTestCount").value);
+        return Number.isInteger(count) && count >= 1 && count <= 50 ? count : 0;
+      }
+
+      function getRemainingStudySessionCount(hoursByTopic = getCompletedStudyHours()) {
+        return topics.reduce((sum, topic) => {
+          if (topic.done) return sum;
+          const minutes = Math.max(0, Math.round((Number(topic.hours) - (hoursByTopic[topic.id] || 0)) * 60));
+          return sum + Math.ceil(minutes / sessionLengthMinutes);
+        }, 0);
       }
 
       function renderTopics() {
@@ -459,24 +526,25 @@
           const name = document.createElement("strong");
           name.textContent = topic.name;
           const subject = document.createElement("span");
-          subject.textContent = topic.subject;
+          subject.textContent = [topic.subject, formatDuration(Number(topic.hours || 0)), topic.difficulty].filter(Boolean).join(" · ");
           label.append(name, subject);
           const hours = document.createElement("input");
           hours.type = "number";
-          hours.min = "0.5";
+          hours.min = String(1 / 60);
           hours.max = "80";
-          hours.step = "0.5";
-          hours.value = topic.hours;
+          hours.step = String(1 / 60);
+          hours.value = Number(topic.hours).toFixed(4).replace(/0+$/, "").replace(/\.$/, "");
           hours.setAttribute("aria-label", `Estimated hours for ${topic.name}`);
           hours.addEventListener("change", () => {
             const value = Number(hours.value);
-            if (!Number.isFinite(value) || value < 0.5 || value > 80) {
-              hours.value = topic.hours;
-              showToast("Enter an estimate between 0.5 and 80 hours.");
+            if (!Number.isFinite(value) || value < 1 / 60 || value > 80) {
+              hours.value = String(topic.hours);
+              showToast("Enter an estimate between 1 minute and 80 hours.");
               return;
             }
-            topic.hours = value;
+            topic.hours = Math.round(value * 60) / 60;
             saveState();
+            renderTopics();
             renderStats();
           });
           const remove = document.createElement("button");
@@ -503,11 +571,12 @@
           return sum + (topic.done ? hours : Math.min(hours, studyHoursByTopic[topic.id] || 0));
         }, 0);
         const remainingHours = Math.max(0, totalHours - completedHours);
+        const remainingWorkHours = remainingHours + getRemainingMockTestHours();
         const deadline = deadlineInput.value ? new Date(`${deadlineInput.value}T00:00:00`) : null;
         const start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         const days = deadline ? Math.max(0, Math.floor((deadline - start) / 86400000) + 1) : 0;
         $("#topicCount").textContent = topics.length;
-        $("#hoursCount").textContent = formatHours(totalHours);
+        $("#hoursCount").textContent = formatDuration(totalHours);
         $("#daysCount").textContent = deadline ? days : "—";
         const completedCount = topics.filter((topic) => topic.done || (studyHoursByTopic[topic.id] || 0) >= Number(topic.hours || 0)).length;
         const percent = totalHours ? Math.round(completedHours / totalHours * 100) : 0;
@@ -515,12 +584,15 @@
         $("#deadlinePill").textContent = deadline
           ? `Goal: ${deadline.toLocaleDateString(undefined, { month: "short", day: "numeric" })}`
           : "Set a target date to get started";
-        const capacity = Number(hoursInput.value) * days;
+        const sessionsPerDay = Number(hoursInput.value);
+        const capacity = sessionsPerDay * sessionLengthMinutes / 60 * days;
+        const capacitySessions = sessionsPerDay * days;
+        const remainingSessions = getRemainingStudySessionCount(studyHoursByTopic) + getRemainingMockTestCount();
         const notice = $("#capacityNotice");
-        const overCapacity = remainingHours > capacity && topics.length > 0 && days > 0;
+        const overCapacity = remainingSessions > capacitySessions && (topics.length > 0 || getRemainingMockTestHours() > 0) && days > 0;
         notice.hidden = !overCapacity;
         if (overCapacity) {
-          notice.textContent = `Your remaining topics need about ${remainingHours.toFixed(1)} hours, but ${days} days at ${hoursInput.value}h/day gives you ${capacity.toFixed(1)} hours. Try adding study time or moving your target date.`;
+          notice.textContent = `Your remaining work needs about ${remainingSessions} sessions (${formatDuration(remainingWorkHours)}), but ${days} days at ${sessionsPerDay} sessions/day gives you ${capacitySessions} session slots (${formatDuration(capacity)}). Add sessions per day or move your target date.`;
         }
         const progress = $("#progressFill");
         if (progress) progress.style.width = `${percent}%`;
@@ -573,109 +645,208 @@
 
         const recommendationText = $("#recommendationText");
         const recommendationButton = $("#applyRecommendation");
-        recommendedHours = null;
+        recommendedSessions = null;
         recommendationButton.hidden = true;
-        if (!topics.length || !deadline) {
+        if ((!topics.length && remainingWorkHours <= 0) || !deadline) {
           recommendationText.textContent = "Add topics and a target date to get a pace recommendation.";
-        } else if (remainingHours <= 0) {
+        } else if (remainingWorkHours <= 0) {
           recommendationText.textContent = "Your syllabus is marked complete. No additional study time is needed for this plan.";
         } else if (days <= 0) {
           recommendationText.textContent = "Your target date has passed. Choose a new target date to recalculate your study pace.";
         } else {
-          const requiredDailyHours = remainingHours / days;
-          const currentDailyHours = Number(hoursInput.value);
-          const suggested = Math.min(16, Math.max(0.5, Math.ceil(requiredDailyHours * 2) / 2));
-          if (requiredDailyHours > currentDailyHours + 0.25) {
-            if (requiredDailyHours > 16) {
-              recommendationText.textContent = `You need about ${requiredDailyHours.toFixed(1)}h/day to finish by your target, above the 16h/day limit. Extend the deadline or reduce the remaining estimates.`;
+          const requiredDailySessions = remainingSessions / days;
+          const currentDailySessions = Number(hoursInput.value);
+          const suggested = Math.min(16, Math.max(1, Math.ceil(requiredDailySessions)));
+          if (suggested > currentDailySessions) {
+            if (requiredDailySessions > 16) {
+              recommendationText.textContent = `You need about ${requiredDailySessions.toFixed(1)} sessions/day at ${formatDuration(sessionLengthMinutes / 60)} each, above the 16-session/day limit. Extend the deadline, lengthen sessions, or reduce the remaining estimates.`;
             } else {
-              recommendationText.textContent = `Increase from ${formatHours(currentDailyHours)} to about ${formatHours(suggested)} each day to finish on time.`;
-              recommendedHours = suggested;
+              recommendationText.textContent = `Increase from ${currentDailySessions} to ${suggested} sessions/day to finish on time.`;
+              recommendedSessions = suggested;
               recommendationButton.hidden = false;
             }
-          } else if (currentDailyHours > requiredDailyHours * 1.25 && currentDailyHours - requiredDailyHours >= 0.5) {
-            recommendationText.textContent = `Your current pace has room to spare. You could reduce from ${formatHours(currentDailyHours)} to about ${formatHours(suggested)} a day and still meet your target.`;
-            recommendedHours = suggested;
+          } else if (currentDailySessions > 1 && currentDailySessions > requiredDailySessions * 1.25 && currentDailySessions - requiredDailySessions >= 1) {
+            recommendationText.textContent = `Your current pace has room to spare. You could reduce from ${currentDailySessions} to ${suggested} sessions/day and still meet your target.`;
+            recommendedSessions = suggested;
             recommendationButton.hidden = false;
           } else {
-            recommendationText.textContent = `You're on track: about ${requiredDailyHours.toFixed(1)}h/day is needed, and you've set ${formatHours(currentDailyHours)}.`;
+            recommendationText.textContent = `You're on track: about ${requiredDailySessions.toFixed(1)} sessions/day are needed, and you've set ${currentDailySessions}.`;
           }
         }
       }
 
       function buildPlan() {
-        const dailyHours = Number(hoursInput.value);
+        const priorSelectedDate = selectedPlanDate;
+        const sessionsPerDay = Number(hoursInput.value);
+        const includeMockTests = $("#includeMockTests").value === "yes";
+        const mockTestCount = includeMockTests ? Number($("#mockTestCount").value) : 0;
         const deadline = new Date(`${deadlineInput.value}T00:00:00`);
         const start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-        if (!topics.length) {
-          showToast("Add at least one topic before creating your plan.");
+        if (!topics.length && !includeMockTests) {
+          showToast("Add a topic or choose mock tests before creating your plan.");
           return;
         }
-        if (!Number.isFinite(dailyHours) || dailyHours < 0.5 || dailyHours > 16) {
-          showToast("Choose daily study time between 0.5 and 16 hours.");
+        if (!Number.isInteger(sessionsPerDay) || sessionsPerDay < 1 || sessionsPerDay > 16) {
+          showToast("Choose between 1 and 16 study sessions per day.");
           return;
         }
         if (!deadlineInput.value || deadline < start) {
           showToast("Choose a target date that is today or later.");
           return;
         }
+        if (includeMockTests && (!Number.isInteger(mockTestCount) || mockTestCount < 1 || mockTestCount > 50)) {
+          showToast("Choose between 1 and 50 mock tests.");
+          return;
+        }
         const dayCount = Math.floor((deadline - start) / 86400000) + 1;
         const progressBeforePlan = getCompletedStudyHours();
-        const requested = topics.reduce((sum, topic) => {
+        const requestedMinutes = topics.reduce((sum, topic) => {
           if (topic.done) return sum;
-          return sum + Math.max(0, Number(topic.hours) - (progressBeforePlan[topic.id] || 0));
+          return sum + Math.max(0, Math.round((Number(topic.hours) - (progressBeforePlan[topic.id] || 0)) * 60));
         }, 0);
-        if (requested <= 0) {
+        const remainingStudySessions = getRemainingStudySessionCount(progressBeforePlan);
+        const requestedSessions = remainingStudySessions + mockTestCount;
+        if (requestedMinutes <= 0 && mockTestCount <= 0) {
           showToast("All syllabus hours are complete. Uncheck a topic to include it in a new plan.");
           return;
         }
-        const capacity = dailyHours * dayCount;
-        if (requested > capacity) {
-          showToast("The syllabus exceeds available hours. Adjust estimates, time or deadline first.");
+        const capacitySessions = sessionsPerDay * dayCount;
+        if (requestedSessions > capacitySessions) {
+          showToast(isRebuildingPlan
+            ? "That session length doesn't fit this plan. Shorten sessions, add sessions per day, or move your target date."
+            : "The topics and mock tests exceed the available session slots. Add sessions per day, move your target date, or reduce the test count.");
           renderStats();
           return;
         }
 
-        const chunkSize = Number($("#breakSize").value);
+        const chunkSizeMinutes = sessionLengthMinutes;
+        const completedMockTestNames = new Set();
+        const previousPlanSessionIds = [];
+        plan.forEach((day) => {
+          day.sessions.forEach((session, index) => {
+            const id = sessionId(day, session, index);
+            previousPlanSessionIds.push(id);
+            if (session.type === "mock-test" && completedSessions.has(id)) completedMockTestNames.add(session.name);
+          });
+        });
+        previousPlanSessionIds.forEach((id) => completedSessions.delete(id));
         completedHoursByTopic = progressBeforePlan;
         planRevision += 1;
         const queue = topics.filter((topic) => !topic.done).map((topic) => ({
-          topic,
-          remaining: Math.max(0, Number(topic.hours) - (progressBeforePlan[topic.id] || 0))
-        })).filter((item) => item.remaining >= 0.5);
+          type: "study",
+          topicId: topic.id,
+          name: topic.name,
+          subject: topic.subject,
+          remainingMinutes: Math.max(0, Math.round((Number(topic.hours) - (progressBeforePlan[topic.id] || 0)) * 60))
+        })).filter((item) => item.remainingMinutes >= 1);
+        const dayBudgets = Array.from({ length: dayCount }, () => sessionsPerDay);
+        const mockTestsByDay = Array.from({ length: dayCount }, () => []);
+        let nextMockTest = mockTestCount;
+        for (let dayOffset = dayCount - 1; dayOffset >= 0 && nextMockTest > 0; dayOffset -= 1) {
+          while (nextMockTest > 0 && dayBudgets[dayOffset] >= 1) {
+            const testNumber = nextMockTest;
+            mockTestsByDay[dayOffset].unshift({
+              id: `mock-test-${testNumber}`,
+              type: "mock-test",
+              topicId: null,
+              name: `Mock Test ${testNumber}`,
+              subject: "Full-course practice",
+              duration: sessionLengthMinutes / 60
+            });
+            dayBudgets[dayOffset] -= 1;
+            nextMockTest -= 1;
+          }
+        }
         const generated = [];
         let queueIndex = 0;
-        for (let dayOffset = 0; dayOffset < dayCount && queueIndex < queue.length; dayOffset += 1) {
+        for (let dayOffset = 0; dayOffset < dayCount; dayOffset += 1) {
           const day = new Date(start);
           day.setDate(day.getDate() + dayOffset);
           const dateKey = localDate(day);
-          let available = dailyHours;
+          let availableSessions = dayBudgets[dayOffset];
           const sessions = [];
-          while (available >= 0.5 && queueIndex < queue.length) {
+          while (availableSessions >= 1 && queueIndex < queue.length) {
             const current = queue[queueIndex];
-            const duration = Math.min(chunkSize, current.remaining, available);
-            if (duration < 0.5) break;
-            sessions.push({ id: `${dateKey}|${planRevision}|${sessions.length}|${current.topic.id}`, topicId: current.topic.id, name: current.topic.name, subject: current.topic.subject, duration });
-            current.remaining = Math.round((current.remaining - duration) * 2) / 2;
-            available = Math.round((available - duration) * 2) / 2;
-            if (current.remaining < 0.5) queueIndex += 1;
+            const durationMinutes = Math.min(chunkSizeMinutes, current.remainingMinutes);
+            if (durationMinutes < 1) break;
+            sessions.push({ id: `${dateKey}|${planRevision}|${sessions.length}|${current.topicId}`, type: current.type, topicId: current.topicId, name: current.name, subject: current.subject, duration: durationMinutes / 60 });
+            current.remainingMinutes -= durationMinutes;
+            availableSessions -= 1;
+            if (current.remainingMinutes < 1) queueIndex += 1;
           }
+          sessions.push(...mockTestsByDay[dayOffset].map((test) => ({
+            ...test,
+            id: `${dateKey}|${test.id}`
+          })));
           if (sessions.length) generated.push({ date: dateKey, sessions });
         }
         plan = generated;
+        plan.forEach((day) => {
+          day.sessions.forEach((session) => {
+            if (session.type === "mock-test" && completedMockTestNames.has(session.name)) {
+              completedSessions.add(session.id);
+            }
+          });
+        });
+        selectedPlanDate = generated.some((day) => day.date === priorSelectedDate) ? priorSelectedDate : null;
+        if (plan.length) {
+          const visiblePlanDay = plan.find((day) => day.date === selectedPlanDate) || plan[0];
+          const visibleDate = new Date(`${visiblePlanDay.date}T00:00:00`);
+          calendarMonth = new Date(visibleDate.getFullYear(), visibleDate.getMonth(), 1);
+        }
         $("#planTag").textContent = "PLAN CREATED";
         saveState();
         renderPlan();
         renderStats();
-        showToast("Your study plan is ready.");
+        showToast(isRebuildingPlan ? "Study plan updated for the new session length." : "Your study plan is ready.");
+      }
+
+      function renderCalendar() {
+        const grid = $("#calendarGrid");
+        grid.replaceChildren();
+        $("#calendarMonth").textContent = calendarMonth.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+        const sessionsByDate = new Map(plan.map((day) => [day.date, day.sessions.length]));
+        const firstWeekday = (new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), 1).getDay() + 6) % 7;
+        const daysInMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 0).getDate();
+        for (let blank = 0; blank < firstWeekday; blank += 1) {
+          const spacer = document.createElement("span");
+          spacer.setAttribute("aria-hidden", "true");
+          grid.append(spacer);
+        }
+        for (let dayNumber = 1; dayNumber <= daysInMonth; dayNumber += 1) {
+          const date = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), dayNumber);
+          const dateKey = localDate(date);
+          const sessionCount = sessionsByDate.get(dateKey) || 0;
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "calendar-day";
+          button.textContent = String(dayNumber);
+          button.disabled = sessionCount === 0;
+          button.setAttribute("role", "gridcell");
+          button.setAttribute("aria-label", `${date.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" })}${sessionCount ? `, ${sessionCount} planned task${sessionCount === 1 ? "" : "s"}` : ", no planned study"}`);
+          if (sessionCount) button.classList.add("is-scheduled");
+          if (dateKey === localDate(today)) button.classList.add("is-today");
+          if (dateKey === selectedPlanDate) {
+            button.classList.add("is-selected");
+            button.setAttribute("aria-pressed", "true");
+          } else {
+            button.setAttribute("aria-pressed", "false");
+          }
+          button.addEventListener("click", () => {
+            selectedPlanDate = dateKey;
+            renderPlan();
+          });
+          grid.append(button);
+        }
       }
 
       function renderPlan() {
         const container = $("#planContent");
         container.replaceChildren();
+        renderCalendar();
         const totalSessions = plan.reduce((sum, day) => sum + day.sessions.length, 0);
         if (!plan.length) {
-          container.innerHTML = '<div class="empty"><strong>Your first study plan is one step away</strong>Add a syllabus, choose your daily study time and target date, then generate a schedule that breaks topics into manageable sessions.</div>';
+          container.innerHTML = '<div class="empty"><strong>Your first study plan is one step away</strong>Add topics, choose how many sessions to study each day and how long each session lasts, then generate a schedule. Your study dates will be highlighted on the calendar.</div>';
           $("#planSummary").textContent = "Add your topics and preferences to create a plan.";
           $("#planTag").textContent = "READY WHEN YOU ARE";
           return;
@@ -683,42 +854,49 @@
         $("#planTag").textContent = "PLAN CREATED";
         const doneSessionCount = plan.reduce((sum, day) => sum + day.sessions.filter((session, index) => completedSessions.has(sessionId(day, session, index))).length, 0);
         const totalHours = plan.reduce((sum, day) => sum + day.sessions.reduce((subtotal, session) => subtotal + session.duration, 0), 0);
-        $("#planSummary").textContent = `${plan.length} study days · ${totalSessions} sessions · ${doneSessionCount} completed · ${totalHours.toFixed(1)} planned hours`;
+        const mockTestCount = plan.reduce((sum, day) => sum + day.sessions.filter((session) => session.type === "mock-test").length, 0);
+        const mockTestSummary = mockTestCount ? ` · ${mockTestCount} mock test${mockTestCount === 1 ? "" : "s"}` : "";
+        $("#planSummary").textContent = `${plan.length} study days · ${totalSessions} sessions${mockTestSummary} · ${doneSessionCount} completed · ${formatDuration(totalHours)} planned`;
         const progressPanel = document.createElement("div");
         progressPanel.innerHTML = '<div class="progress-track"><div id="progressFill" class="progress-fill"></div></div><div class="progress-label"><span>Topic progress</span><span id="progressValue"></span></div>';
         container.append(progressPanel);
-        plan.forEach((day) => {
+        const selectedDay = plan.find((day) => day.date === selectedPlanDate);
+        if (!selectedDay) {
+          const empty = document.createElement("div");
+          empty.className = "empty";
+          empty.innerHTML = "<strong>Select a study date</strong>Dates with planned sessions are highlighted in green.";
+          container.append(empty);
+        } else {
           const card = document.createElement("div");
           card.className = "day-card";
-          const date = new Date(`${day.date}T00:00:00`);
-          const isToday = day.date === localDate(today);
+          const date = new Date(`${selectedDay.date}T00:00:00`);
           const header = document.createElement("div");
           header.className = "day-head";
           const title = document.createElement("div");
           title.className = "day-name";
-          title.textContent = isToday ? "Today" : date.toLocaleDateString(undefined, { weekday: "long" });
+          title.textContent = selectedDay.date === localDate(today) ? "Today" : date.toLocaleDateString(undefined, { weekday: "long" });
           const dateLabel = document.createElement("span");
           dateLabel.className = "day-date";
-          dateLabel.textContent = date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+          dateLabel.textContent = date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
           title.append(dateLabel);
-          const dailyTotal = day.sessions.reduce((sum, session) => sum + session.duration, 0);
-          const doneToday = day.sessions.filter((session, index) => completedSessions.has(sessionId(day, session, index))).length;
+          const dailyTotal = selectedDay.sessions.reduce((sum, session) => sum + session.duration, 0);
+          const doneToday = selectedDay.sessions.filter((session, index) => completedSessions.has(sessionId(selectedDay, session, index))).length;
           const dayHours = document.createElement("span");
           dayHours.className = "day-hours";
-          dayHours.textContent = `${doneToday}/${day.sessions.length} done · ${dailyTotal}h`;
+          dayHours.textContent = `${doneToday}/${selectedDay.sessions.length} done · ${formatDuration(dailyTotal)}`;
           header.append(title, dayHours);
           card.append(header);
-          day.sessions.forEach((session, sessionIndex) => {
+          selectedDay.sessions.forEach((session, sessionIndex) => {
             const row = document.createElement("div");
             row.className = "session";
             const check = document.createElement("input");
             check.type = "checkbox";
             check.className = "session-check";
-            check.checked = completedSessions.has(sessionId(day, session, sessionIndex));
-            check.setAttribute("aria-label", `Mark ${session.name} session ${sessionIndex + 1} complete`);
+            check.checked = completedSessions.has(sessionId(selectedDay, session, sessionIndex));
+            check.setAttribute("aria-label", `Mark ${session.name} complete`);
             if (check.checked) row.classList.add("is-done");
             check.addEventListener("change", () => {
-              const id = sessionId(day, session, sessionIndex);
+              const id = sessionId(selectedDay, session, sessionIndex);
               if (check.checked) completedSessions.add(id);
               else completedSessions.delete(id);
               saveState();
@@ -727,23 +905,23 @@
             });
             const time = document.createElement("div");
             time.className = "session-time";
-            time.textContent = `Session ${sessionIndex + 1}`;
+            time.textContent = session.type === "mock-test" ? "Mock test" : `Session ${sessionIndex + 1}`;
             const detail = document.createElement("div");
-            const title = document.createElement("div");
-            title.className = "session-title";
-            title.textContent = session.name;
+            const sessionTitle = document.createElement("div");
+            sessionTitle.className = "session-title";
+            sessionTitle.textContent = session.name;
             const subject = document.createElement("div");
             subject.className = "session-subject";
             subject.textContent = session.subject;
-            detail.append(title, subject);
+            detail.append(sessionTitle, subject);
             const duration = document.createElement("span");
             duration.className = "session-duration";
-            duration.textContent = `${session.duration}h`;
+            duration.textContent = formatDuration(session.duration);
             row.append(check, time, detail, duration);
             card.append(row);
           });
           container.append(card);
-        });
+        }
         renderStats();
       }
 
@@ -754,7 +932,7 @@
       }
 
       function saveState() {
-        const data = { topics, plan, completedSessions: [...completedSessions], completedHoursByTopic, planRevision, hoursPerDay: hoursInput.value, targetDate: deadlineInput.value, breakSize: $("#breakSize").value, timerDurationMs, timerRemainingMs, timerEndsAt, timerRunning };
+        const data = { topics, plan, completedSessions: [...completedSessions], completedHoursByTopic, includeMockTests: $("#includeMockTests").value, mockTestCount: $("#mockTestCount").value, planRevision, sessionsPerDay: hoursInput.value, targetDate: deadlineInput.value, sessionLengthMinutes };
         try { localStorage.setItem(storageKey, JSON.stringify(data)); }
         catch (error) { console.error("Could not save your plan locally.", error); }
       }
@@ -767,21 +945,16 @@
           if (Array.isArray(saved.plan)) plan = saved.plan;
           if (Array.isArray(saved.completedSessions)) completedSessions = new Set(saved.completedSessions);
           if (saved.completedHoursByTopic && typeof saved.completedHoursByTopic === "object") completedHoursByTopic = saved.completedHoursByTopic;
+          if (saved.includeMockTests === "yes" || saved.includeMockTests === "no") $("#includeMockTests").value = saved.includeMockTests;
+          if (Number.isInteger(Number(saved.mockTestCount)) && Number(saved.mockTestCount) >= 1 && Number(saved.mockTestCount) <= 50) $("#mockTestCount").value = String(Number(saved.mockTestCount));
           if (Number.isInteger(saved.planRevision)) planRevision = saved.planRevision;
-          if (saved.hoursPerDay) hoursInput.value = saved.hoursPerDay;
+          const savedSessionsPerDay = Number(saved.sessionsPerDay ?? saved.hoursPerDay);
+          if (Number.isFinite(savedSessionsPerDay)) hoursInput.value = String(Math.max(1, Math.min(16, Math.round(savedSessionsPerDay))));
           if (saved.targetDate) deadlineInput.value = saved.targetDate;
-          if (saved.breakSize) $("#breakSize").value = saved.breakSize;
-          timerDurationMs = Number($("#breakSize").value) * 60 * 60 * 1000;
-          timerRemainingMs = Number.isFinite(saved.timerRemainingMs) ? Math.max(0, saved.timerRemainingMs) : timerDurationMs;
-          timerRunning = Boolean(saved.timerRunning && Number.isFinite(saved.timerEndsAt));
-          timerEndsAt = timerRunning ? saved.timerEndsAt : null;
-          if (timerRunning) {
-            timerRemainingMs = Math.max(0, timerEndsAt - Date.now());
-            if (timerRemainingMs === 0) {
-              finishTimer(false);
-            } else {
-              timerInterval = setInterval(updateTimer, 1000);
-            }
+          if (Number.isFinite(saved.sessionLengthMinutes)) {
+            sessionLengthMinutes = Math.max(1, Math.min(23 * 60 + 59, Math.round(saved.sessionLengthMinutes)));
+          } else if (Number.isFinite(Number(saved.breakSize))) {
+            sessionLengthMinutes = Math.max(1, Math.min(23 * 60 + 59, Math.round(Number(saved.breakSize) * 60)));
           }
         } catch (error) {
           console.error("Could not load the saved study plan.", error);
@@ -789,89 +962,112 @@
         }
       }
 
-      function addImportedText(text) {
-        const lines = text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
-        if (!lines.length) throw new Error("No readable text was found in that file.");
-        const existing = new Set(topics.map((topic) => `${topic.subject.toLowerCase()}|${topic.name.toLowerCase()}`));
-        const isCsv = lines.some((line) => line.includes(","));
-        let parsedLines = lines;
-        if (isCsv) {
-          const cells = (line) => line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map((cell) => cell.trim().replace(/^"|"$/g, ""));
-          const header = cells(lines[0]).map((cell) => cell.toLowerCase());
-          const subjectColumn = header.findIndex((cell) => /^(subject|course|class)$/.test(cell));
-          const topicColumn = header.findIndex((cell) => /^(topic|chapter|unit|lesson)$/.test(cell));
-          if (subjectColumn >= 0 && topicColumn >= 0) {
-            parsedLines = lines.slice(1).map((line) => {
-              const row = cells(line);
-              return `${row[subjectColumn] || "General"} | ${row[topicColumn] || ""}`;
-            }).filter((line) => !line.endsWith("| "));
-          } else {
-            parsedLines = lines.map((line) => cells(line).filter(Boolean).join(" | "));
+      function makeNotebookMaterialPrompt() {
+        return `Analyze all study-material sources currently added to this NotebookLM notebook. Do not ask for filenames or additional materials.\n\nFirst inspect and synthesize the material across all sources. Build a concise course outline of meaningful, teachable concepts a learner must understand—not a transcription of the document structure.\n\nTopic-selection rules:\n- Do NOT treat every heading, subheading, chapter title, page title, learning objective, keyword, example, exercise, definition, or repeated label as a separate topic.\n- Treat headings as organizational clues only. Include a topic only when the sources contain substantive instructional material for it, such as explanations, methods, principles, or connected concepts.\n- Merge headings and subheadings that explain parts of the same concept into one coherent topic. Keep subtopics separate only when each is a substantial, independently learnable concept with enough material to study on its own.\n- Exclude administrative material, contents pages, introductions without teachable content, summaries that repeat earlier material, references, and duplicate coverage.\n- Prefer a small, useful set of course topics over an exhaustive list. As a guide, use a topic for a coherent study block, not for each heading; combine closely related concepts.\n- Use the sources' course/subject and sequence where clear. If a heading is ambiguous, inspect the surrounding source content before deciding whether it represents a topic.\n\nFor each selected topic, estimate focused study time from the amount of substantive material, conceptual density, and difficulty. Assume a learner with basic prerequisites who is learning the material for the first time. Include time to understand and briefly review the topic, but exclude breaks. Use whole minutes. Do not invent topics or claim unsupported content. Ensure the course total equals the sum of the topic estimates.\n\nBefore returning, check that each listed topic has substantive supporting content, that related headings have been consolidated, and that no topic is merely a heading label or duplicate.\n\nReturn only valid JSON in this exact shape, with no Markdown fences or extra commentary:\n{"topics":[{"subject":"Course or subject","name":"Coherent study topic","difficulty":"Low, Medium, or High","estimatedMinutes":45}],"courseTotalMinutes":45}`;
+      }
+
+      function parseEstimatedMinutes(value) {
+        if (typeof value === "number" && Number.isFinite(value)) return Math.round(value);
+        if (typeof value !== "string") return NaN;
+        const text = value.trim().toLowerCase();
+        if (/^\d+(?:\.\d+)?$/.test(text)) return Math.round(Number(text));
+        const matches = [...text.matchAll(/(\d+(?:\.\d+)?)\s*(hours?|hrs?|h|minutes?|mins?|m)\b/g)];
+        if (!matches.length) return NaN;
+        return Math.round(matches.reduce((total, match) => {
+          const unit = match[2];
+          return total + Number(match[1]) * (/^(?:hours?|hrs?|h)$/.test(unit) ? 60 : 1);
+        }, 0));
+      }
+
+      function parseNotebookEstimates(value) {
+        const firstBrace = value.indexOf("{");
+        const lastBrace = value.lastIndexOf("}");
+        if (firstBrace < 0 || lastBrace <= firstBrace) {
+          throw new Error("Couldn't find a JSON response. Copy the full JSON output from NotebookLM.");
+        }
+        let response;
+        try {
+          response = JSON.parse(value.slice(firstBrace, lastBrace + 1));
+        } catch {
+          throw new Error("The pasted response isn't valid JSON. Ask NotebookLM to return only the requested JSON.");
+        }
+        if (!response || typeof response !== "object") {
+          throw new Error("The response must be a JSON object containing topic estimates.");
+        }
+        const rows = Array.isArray(response) ? response : response.topics;
+        if (!Array.isArray(rows) || rows.length === 0) {
+          throw new Error("The JSON needs a non-empty \"topics\" array.");
+        }
+        return rows.map((row, index) => {
+          if (!row || typeof row !== "object") {
+            throw new Error(`Topic ${index + 1} must be a JSON object.`);
           }
+          const name = typeof row.name === "string" ? row.name.trim() : typeof row.topic === "string" ? row.topic.trim() : "";
+          const minutes = parseEstimatedMinutes(row.estimatedMinutes ?? row.estimatedTime ?? row.duration);
+          if (!name || !Number.isFinite(minutes) || minutes < 1 || minutes > 80 * 60) {
+            throw new Error(`Topic ${index + 1} needs a name and an estimate between 1 minute and 80 hours.`);
+          }
+          return {
+            id: `topic-${Date.now()}-${index}`,
+            subject: typeof row.subject === "string" && row.subject.trim() ? row.subject.trim() : "General",
+            name,
+            difficulty: typeof row.difficulty === "string" ? row.difficulty.trim() : "",
+            hours: minutes / 60,
+            done: false
+          };
+        });
+      }
+
+      function importNotebookEstimates() {
+        const imported = parseNotebookEstimates($("#materialEstimatesInput").value);
+        const existing = new Set(topics.map((topic) => `${topic.subject.toLowerCase()}|${topic.name.toLowerCase()}`));
+        const uniqueTopics = imported.filter((topic) => {
+          const key = `${topic.subject.toLowerCase()}|${topic.name.toLowerCase()}`;
+          if (existing.has(key)) return false;
+          existing.add(key);
+          return true;
+        });
+        if (!uniqueTopics.length) {
+          throw new Error("Those NotebookLM topics are already in your list.");
         }
-        const imported = parseTopicLines(parsedLines.join("\n")).filter((topic) => !existing.has(`${topic.subject.toLowerCase()}|${topic.name.toLowerCase()}`));
-        if (!imported.length) {
-          showToast("Those topics are already in your list.");
-          return;
-        }
-        topics = [...topics, ...imported];
+        topics = [...topics, ...uniqueTopics];
         plan = [];
         saveState();
         renderAll();
-        showToast(`Imported ${imported.length} topic${imported.length === 1 ? "" : "s"}. Review the estimates below.`);
+        const totalMinutes = uniqueTopics.reduce((sum, topic) => sum + Math.round(topic.hours * 60), 0);
+        showToast(`Added ${uniqueTopics.length} topics · ${formatDuration(totalMinutes / 60)} estimated.`);
       }
 
-      async function readSyllabus(file) {
-        const extension = file.name.split(".").pop().toLowerCase();
-        if (["txt", "md", "csv"].includes(extension)) return await file.text();
-        if (extension === "docx") {
-          if (!window.mammoth) throw new Error("Word document support needs an internet connection to load its reader. Try a text or CSV file instead.");
-          const buffer = await file.arrayBuffer();
-          const result = await window.mammoth.extractRawText({ arrayBuffer: buffer });
-          return result.value;
+      $("#includeMockTests").addEventListener("change", () => {
+        updateMockTestFields();
+        saveState();
+        renderStats();
+      });
+      $("#mockTestCount").addEventListener("change", () => {
+        const count = Number($("#mockTestCount").value);
+        if (!Number.isInteger(count) || count < 1 || count > 50) {
+          $("#mockTestCount").value = "1";
+          showToast("Choose between 1 and 50 mock tests.");
         }
-        if (extension === "pdf") {
-          if (!window.pdfjsLib) throw new Error("PDF support needs an internet connection to load its reader. Try a text or CSV file instead.");
-          window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-          const buffer = await file.arrayBuffer();
-          const document = await window.pdfjsLib.getDocument({ data: buffer }).promise;
-          const pages = [];
-          for (let number = 1; number <= document.numPages; number += 1) {
-            const page = await document.getPage(number);
-            const content = await page.getTextContent();
-            const lines = [];
-            let currentLine = "";
-            let currentY;
-            content.items.forEach((item) => {
-              const y = item.transform ? item.transform[5] : undefined;
-              if (currentLine && y !== undefined && currentY !== undefined && Math.abs(y - currentY) > 2) {
-                lines.push(currentLine.trim());
-                currentLine = "";
-              } else if (currentLine && y === undefined) {
-                currentLine += " ";
-              }
-              currentLine += item.str || "";
-              if (y !== undefined) currentY = y;
-            });
-            if (currentLine.trim()) lines.push(currentLine.trim());
-            pages.push(lines.join("\n"));
-          }
-          return pages.join("\n");
-        }
-        throw new Error("Unsupported file type. Use PDF, DOCX, TXT, Markdown or CSV.");
-      }
-
-      $("#fileInput").addEventListener("change", async (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
+        saveState();
+        renderStats();
+      });
+      $("#copyMaterialPrompt").addEventListener("click", async () => {
         try {
-          const text = await readSyllabus(file);
-          addImportedText(text);
+          await navigator.clipboard.writeText(makeNotebookMaterialPrompt());
+          showToast("Analysis prompt copied. Add your files to NotebookLM and paste the prompt there.");
         } catch (error) {
-          console.error("Syllabus import failed.", error);
-          showToast(error.message || "Couldn't read that syllabus file.");
-        } finally {
-          event.target.value = "";
+          console.error("Could not copy the NotebookLM study-material prompt.", error);
+          showToast("Couldn't access the clipboard. Check browser permissions and try again.");
+        }
+      });
+      $("#openNotebookForMaterials").addEventListener("click", () => window.open("https://notebooklm.google.com/", "_blank", "noopener,noreferrer"));
+      $("#importMaterialEstimates").addEventListener("click", () => {
+        try {
+          importNotebookEstimates();
+        } catch (error) {
+          console.error("Could not import NotebookLM study-time estimates.", error);
+          showToast(error.message || "Couldn't import the NotebookLM response.");
         }
       });
       $("#removeAllTopicsButton").addEventListener("click", () => {
@@ -889,21 +1085,30 @@
       });
       $("#generateButton").addEventListener("click", buildPlan);
       $("#applyRecommendation").addEventListener("click", () => {
-        if (recommendedHours === null) return;
-        const selectedHours = recommendedHours;
-        hoursInput.value = selectedHours;
+        if (recommendedSessions === null) return;
+        hoursInput.value = recommendedSessions;
         saveState();
-        renderStats();
-        showToast(`Daily study time set to ${formatHours(selectedHours)}.`);
+        if (plan.length) buildPlan();
+        else renderStats();
+        showToast(`Daily study sessions set to ${recommendedSessions} per day.`);
       });
-      $("#timerStart").addEventListener("click", startTimer);
-      $("#timerPause").addEventListener("click", pauseTimer);
-      $("#timerReset").addEventListener("click", resetTimer);
-      [hoursInput, deadlineInput, $("#breakSize")].forEach((input) => input.addEventListener("change", () => {
-        if (input === $("#breakSize")) resetTimer();
+      $("#calendarPrevious").addEventListener("click", () => {
+        calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1, 1);
+        renderCalendar();
+      });
+      $("#calendarNext").addEventListener("click", () => {
+        calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 1);
+        renderCalendar();
+      });
+      hoursInput.addEventListener("change", () => {
+        saveState();
+        if (plan.length) buildPlan();
+        else renderStats();
+      });
+      deadlineInput.addEventListener("change", () => {
         saveState();
         renderStats();
-      }));
+      });
       $("#notesButton").addEventListener("click", async () => {
         const topic = topics[0];
         if (!topic) {
@@ -921,8 +1126,21 @@
       });
       $("#notebookButton").addEventListener("click", () => window.open("https://notebooklm.google.com/", "_blank", "noopener,noreferrer"));
 
+      function updateMockTestFields() {
+        const enabled = $("#includeMockTests").value === "yes";
+        $("#mockTestCountField").hidden = !enabled;
+        $("#mockTestHint").hidden = !enabled;
+      }
+
+      setupSessionWheels();
       loadState();
-      renderTimer();
+      if (plan.length) {
+        const firstPlanDate = new Date(`${plan[0].date}T00:00:00`);
+        calendarMonth = new Date(firstPlanDate.getFullYear(), firstPlanDate.getMonth(), 1);
+      }
+      updateMockTestFields();
+      syncWheel($("#hoursWheel"), Math.floor(sessionLengthMinutes / 60));
+      syncWheel($("#minutesWheel"), sessionLengthMinutes % 60);
       renderAll();
     })();
   </script>
