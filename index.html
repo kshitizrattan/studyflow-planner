@@ -23,7 +23,7 @@
     }
     * { box-sizing: border-box; }
     body { margin: 0; color: var(--ink); background: var(--paper); }
-    button, input, select, textarea { font: inherit; }
+    button, input, select { font: inherit; }
     button { cursor: pointer; }
     .app { max-width: 1440px; margin: auto; min-height: 100vh; }
     .topbar { height: 76px; padding: 0 4.5%; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.72); }
@@ -68,11 +68,9 @@
     .field { margin-top: 14px; }
     .field label { display: flex; justify-content: space-between; color: #4a5750; font-size: 12px; font-weight: 650; margin-bottom: 7px; }
     .field label small { color: #9aa39d; font-weight: 450; }
-    input, select, textarea { width: 100%; color: var(--ink); border: 1px solid #dfe4dc; background: #fff; border-radius: 9px; outline: none; }
+    input, select { width: 100%; color: var(--ink); border: 1px solid #dfe4dc; background: #fff; border-radius: 9px; outline: none; }
     input, select { padding: 10px 11px; font-size: 13px; }
-    textarea { min-height: 98px; resize: vertical; padding: 10px 11px; font-size: 12px; line-height: 1.55; }
-    input:focus, select:focus, textarea:focus { border-color: #83aa92; box-shadow: 0 0 0 3px rgba(46,116,91,.09); }
-    .format-hint { color: #87918a; font-size: 10px; line-height: 1.55; margin-top: 6px; }
+    input:focus, select:focus { border-color: #83aa92; box-shadow: 0 0 0 3px rgba(46,116,91,.09); }
     .two-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .button { border: 0; border-radius: 9px; padding: 11px 14px; font-size: 12px; font-weight: 700; transition: .15s ease; }
     .button-primary { background: var(--green); color: white; width: 100%; margin-top: 15px; }
@@ -203,14 +201,8 @@
             <div class="panel-heading" style="margin-bottom:8px">
               <div><h2>Build your plan</h2><div class="subheading">Adjust everything to fit your routine</div></div>
             </div>
-            <div class="field">
-              <label for="topicsInput">Your topics <small>one topic per line</small></label>
-              <textarea id="topicsInput" placeholder="Biology | Cell structure&#10;Biology | Genetics&#10;History | The French Revolution"></textarea>
-              <div class="format-hint">Tip: use “Subject | Topic” for grouped subjects. Estimates are a starting point—edit the hours below.</div>
-              <button id="addTopicsButton" class="button button-light button-small" type="button" style="margin-top:8px">Add topics</button>
-            </div>
             <div class="upload">
-              <div class="upload-copy"><strong>Import a syllabus</strong><span>PDF, Word, text, Markdown or CSV</span></div>
+              <div class="upload-copy"><strong>Add a syllabus</strong><span>PDF, Word, text, Markdown or CSV</span></div>
               <label class="button button-light button-small" for="fileInput">Choose file</label>
               <input id="fileInput" type="file" accept=".pdf,.docx,.txt,.md,.csv">
             </div>
@@ -268,7 +260,6 @@
     (() => {
       const $ = (selector) => document.querySelector(selector);
       const storageKey = "studyflow-plan-v1";
-      const topicInput = $("#topicsInput");
       const topicList = $("#topicList");
       const deadlineInput = $("#targetDate");
       const hoursInput = $("#hoursPerDay");
@@ -824,7 +815,6 @@
           return;
         }
         topics = [...topics, ...imported];
-        topicInput.value = "";
         plan = [];
         saveState();
         renderAll();
@@ -871,21 +861,6 @@
         throw new Error("Unsupported file type. Use PDF, DOCX, TXT, Markdown or CSV.");
       }
 
-      function addManualTopics() {
-        if (!topicInput.value.trim()) return;
-        topics = [...topics, ...parseTopicLines(topicInput.value)];
-        topicInput.value = "";
-        plan = [];
-        saveState();
-        renderAll();
-      }
-      $("#addTopicsButton").addEventListener("click", addManualTopics);
-      topicInput.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
-          event.preventDefault();
-          addManualTopics();
-        }
-      });
       $("#fileInput").addEventListener("change", async (event) => {
         const file = event.target.files[0];
         if (!file) return;
@@ -947,7 +922,6 @@
       $("#notebookButton").addEventListener("click", () => window.open("https://notebooklm.google.com/", "_blank", "noopener,noreferrer"));
 
       loadState();
-      if (topics.length) topicInput.value = "";
       renderTimer();
       renderAll();
     })();
